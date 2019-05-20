@@ -1,0 +1,12 @@
+#!/bin/bash
+#usage first input file then output file
+
+Inpu=""
+Outpu=""
+IFS=$'\n'
+set -f
+for line in $(ls $@ | awk -F "\n" '/(mkv|mp4|webm|m4a)/ {print $0 }'); do
+	Inpu=$(echo $line | awk -F "\n" '{print $1}')
+	Outpu=$(echo $line | awk -F "\n" '/(mkv|mp4|webm|m4a)/ {sub (/(mkv|mp4|webm|m4a)/, "'$1'"); print $0}')
+	ffmpeg -hwaccel auto -i $Inpu -bufsize 500m  $Outpu
+done

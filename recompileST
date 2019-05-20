@@ -1,0 +1,7 @@
+#!/bin/bash
+cd "/home/david/.scripts/st-patched"
+sudo make clean install
+sudo rm config.h
+cp pywalconfig config.h
+make
+sudo make install

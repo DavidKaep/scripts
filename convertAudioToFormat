@@ -1,0 +1,13 @@
+#!/bin/bash
+
+
+Inpu=""
+Outpu=""
+IFS=$'\n'
+set -f
+for line in $(ls $@ | awk -F "\n" '/(opus)/ {print $0}'); do
+	echo $line
+	Inpu=$(echo $line | awk -F "\n" '{print $1}')
+	Outpu=$(echo $line | awk -F "\n" '/(opus)/ {sub (/(opus)/, "'$1'"); print $0}')
+	ffmpeg -hwaccel auto -i $Inpu $Outpu
+done
