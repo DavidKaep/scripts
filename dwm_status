@@ -75,8 +75,7 @@ print_temp(){
 
 print_bat(){
 	hash acpi || return 0
-	cat "/sys/class/power_supply/BAT0/capacity"
-	cat "/sys/class/power_supply/BAT1/capacity"
+	cat "/sys/class/power_supply/BAT0/capacity" "/sys/class/power_supply/BAT1/capacity"
 }
 
 print_date(){
