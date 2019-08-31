@@ -1,0 +1,15 @@
+#!/bin/sh
+#sets new pywal theme to get colors out of the image
+# black background is set by feh in i3 autostart
+# sed --in-place="backupSedColorsWalSt.h "s/^\.*#\.*cursor/  [258] = "#FF00FF",     \/*cursor*\//g" /home/david/.cache/wal/colors-wal-st-h
+
+wal --saturate 0.7 -i $1
+cd "/home/david/.scripts/st"
+echo "*.alpha: 230" >> "/home/david/.cache/wal/colors.Xresources"
+sudo make clean install
+sudo rm config.h
+cp pywalconfig config.h
+make
+sudo make install
+xrdb /home/david/.Xresources
+polybar_launch.sh

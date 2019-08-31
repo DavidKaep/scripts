@@ -1,0 +1,2 @@
+#!/bin/bash
+multitail -CS irc -f /home/david/irc/irc.geekshed.net/#redditnet/out

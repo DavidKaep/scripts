@@ -1,0 +1,11 @@
+#!/bin/bash
+
+sync &
+SYNCPID=$!
+while [ -e /proc/$SYNCPID -a /proc/$SYNCPID/exe ]
+do
+	grep -e Dirty: /proc/meminfo
+	sleep 2
+done
+umount /home/david/USB2
+

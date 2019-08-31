@@ -1,0 +1,5 @@
+#!/bin/bash
+
+#ffmpeg -i Some\ Fucking\ Gopnik\ on\ a\ Green\ Screen-DkWGT5bBMb0.mp4 -i ReicherFolgerSuchVer.mp4 -filter_complex "[0]rotate=angle=(t*5):fillcolor=#0CFD0C[rot];[rot]chromakey=color=#0CFD0D:similarity=0.4[keyed];[1][keyed]overlay=x=-w+t*300:y=100+sin(t*3)*200[overl];[overl]zoompan=z='min(max(zoom,pzoom)+0.01,1.5)':d=1" test.mp4
+ffmpeg -i Some\ Fucking\ Gopnik\ on\ a\ Green\ Screen-DkWGT5bBMb0.mp4 -i ReicherFolgerSuchVer.mp4 -filter_complex "[1]zoompan=z='min(max(zoom,pzoom)+0.01,1.5)':d=1" test.mp4
+

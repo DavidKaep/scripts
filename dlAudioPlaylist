@@ -1,0 +1,9 @@
+#!/bin/bash
+
+mkdir """$1"""
+#rm "echo"
+cd """$1"""
+mkdir """$2"""
+#rm "echo"
+cd """$2"""
+youtube-dl -x -o '%(playlist_index)s %(title)s.%(ext)s' $3

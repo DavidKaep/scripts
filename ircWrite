@@ -1,0 +1,8 @@
+#!/bin/bash
+
+SERVER=$(ls /home/david/irc | dmenu -p "Select Server")
+CHANNEL=$(ls /home/david/irc/$SERVER/ | grep \# | dmenu -p "Select Channel")
+nvim /home/david/irc/$SERVER/$CHANNEL/message
+MESSAGE=$(cat /home/david/irc/$SERVER/$CHANNEL/message)
+rm /home/david/irc/$SERVER/$CHANNEL/message
+echo $MESSAGE >> /home/david/irc/$SERVER/$CHANNEL/in

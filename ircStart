@@ -1,0 +1,18 @@
+#!/bin/bash
+
+exec st ii -s irc.freenode.net -n gentan &
+sleep 2
+echo "/privmsg NickServ : identify gentan dkEdGf9j5w1jnA0N8koy" > /home/david/irc/irc.freenode.net/in
+echo "/join #gentoo" > /home/david/irc/irc.freenode.net/in
+echo "/join ##linux" > /home/david/irc/irc.freenode.net/in
+echo "/join #telegram-foss" > /home/david/irc/irc.freenode.net/in
+echo "/join #kicad" > /home/david/irc/irc.freenode.net/in
+
+exec st ii -s irc.rizon.net -n ronaqn &
+echo "/privmsg NickServ : identify ronaqn SG63Yih24RLQFz0wu8aA" >> /home/david/irc/irc.rizon.net/in
+echo "/join #4chan" > /home/david/irc/irc.rizon.net/in
+echo "/join #/g/tech" > /home/david/irc/irc.rizon.net/in
+echo "/join #/g/technology" > /home/david/irc/irc.rizon.net/in
+
+exec st -ii -s irc.geekshed.net -n ronaqn &
+echo "/join #redditnet" > /home/david/irc/irc.geekshed.net/in

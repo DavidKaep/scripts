@@ -1,0 +1,14 @@
+#!/bin/bash
+
+
+Inpu=""
+Outpu=""
+IFS=$'\n'
+set -f
+for line in $(find . -name "*.flac" | awk -F "\n" '/(flac)/ {print $0}'); do
+	echo $line
+	Inpu=$(echo $line | awk -F "\n" '{print $1}')
+	Outpu=$(echo $line | awk -F "\n" '/(flac)/ {sub (/(flac)/, "opus"); print $0}')
+	ffmpeg -hwaccel auto -i $Inpu -c:a libopus -b:a 192k $Outpu
+	rm $Inpu
+done
