@@ -1,0 +1,6 @@
+#!/bin/bash
+MONITOR="$(xrandr | awk '/\sconnected/{print $1}' | sed -n '2,10 p' | dmenu -i -p "Choose Monitor")"
+
+xrandr --output $MONITOR --off
+sleep 0.5
+herbstclient detect_monitors

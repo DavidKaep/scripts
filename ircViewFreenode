@@ -1,2 +1,0 @@
-#!/bin/bash
-multitail -CS irc -f /home/david/irc/irc.freenode.net/#gentoo/out -f /home/david/irc/irc.freenode.net/##linux/out /home/david/irc/irc.freenode.net/#neovim/out -f /home/david/irc/irc.freenode.net/#kicad/out

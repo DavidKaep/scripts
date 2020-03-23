@@ -74,12 +74,12 @@ print_temp(){
 }
 
 print_bat0(){
-	hash acpi || return 0
+	#hash acpi || return 0
 	cat "/sys/class/power_supply/BAT0/capacity"
 }
 
 print_bat1(){
-	hash acpi || return 0
+	#hash acpi || return 0
 	cat "/sys/class/power_supply/BAT1/capacity"
 }
 

@@ -1,0 +1,12 @@
+#!/bin/bash
+#usage first input file then output file
+
+Inpu=""
+Outpu=""
+IFS=$'\n'
+set -f
+for line in $(ls $@ | awk -F "\n" '/(aax)/ {print $0 }'); do
+	Inpu=$(echo $line | awk -F "\n" '{print $1}')
+	Outpu=$(echo $line | awk -F "\n" '/(aax)/ {sub (/(aax)/, "m4a"); print $0}')
+	ffmpeg -hwaccel auto -activation_bytes 98397008 -i $Inpu -c copy $Outpu
+done

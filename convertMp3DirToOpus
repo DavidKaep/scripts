@@ -4,11 +4,22 @@
 Inpu=""
 Outpu=""
 IFS=$'\n'
+DIR="/home/david/$1"
 set -f
-for line in $(find . -name "*.mp3" | awk -F "\n" '/(mp3)/ {print $0}'); do
+echo $DIR
+
+
+
+convert() {
+for line in $(find $DIR -name "*.mp3" | awk "NR%4==$1" | awk -F "\n" '/(mp3)/ {print $0}'); do
 	echo $line
 	Inpu=$(echo $line | awk -F "\n" '{print $1}')
 	Outpu=$(echo $line | awk -F "\n" '/(mp3)/ {sub (/(mp3)/, "opus"); print $0}')
 	ffmpeg -hwaccel auto -i $Inpu -c:a libopus -b:a 192k $Outpu
 	rm $Inpu
 done
+}
+
+
+
+convert 0 & convert 1 & convert 2 & convert 3

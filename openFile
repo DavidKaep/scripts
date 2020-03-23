@@ -1,2 +1,4 @@
 #!/bin/bash
-xdg-open "$(find ~ | fzf -m)"
+if [ "$1" == "boot" ];then
+	echo "hi"
+fi
