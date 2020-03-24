@@ -1,0 +1,9 @@
+#!/bin/sh
+herbstclient fullscreen toggle
+
+if pgrep -x picom >> /dev/null
+then
+    pkill picom
+else
+    picom -b
+fi

@@ -2,11 +2,5 @@
 #sets new pywal theme to get colors out of the image
 # black background is set by feh in i3 autostart
 
-wal -b=#000000 --saturate 1.0 -n -i $1
-cd "/home/david/.scripts/st-patched"
-sudo make clean install
-sudo rm config.h
-cp pywalconfig config.h
-make
-sudo make install
-polybar_launch.sh
+wal -b=#000000 --saturate 0.8 -n -i $1
+/home/david/.config/polybar/launch
