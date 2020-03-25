@@ -7,3 +7,6 @@ then
 else
     picom -b
 fi
+
+sleep 10m
+picom -b

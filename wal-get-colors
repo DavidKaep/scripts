@@ -2,5 +2,8 @@
 #sets new pywal theme to get colors out of the image
 # black background is set by feh in i3 autostart
 
-wal -b=#000000 --saturate 0.8 -n -i $1
+#wal -b=#000000 --saturate 0.8 -i $1
+wal --saturate 0.8 -i $1 &
+xwallpaper --stretch $1
+echo $(readlink -f $1) > /home/david/.scripts/ActiveWallpaper
 /home/david/.config/polybar/launch
