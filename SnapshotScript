@@ -1,0 +1,119 @@
+#!/bin/bash
+
+# By Marc MERLIN <marc_soft@merlins.org>
+# License Apache 2.0.
+
+
+# This lets you create sets of snapshots at any interval (I use hourly,
+# daily, and weekly) and delete the older ones automatically.
+
+
+
+#mount -U c42c4cb0-948c-4d16-878d-2dc9533e680c /mnt/Backup
+
+
+# Usage:
+# This is called from /etc/cron.d like so:
+# 0 * * * * root btrfs-snaps hourly 3 | egrep -v '(Create a snapshot of|Will delete the oldest|Delete subvolume|Making snapshot of )'
+# 1 0 * * * root btrfs-snaps daily  4 | egrep -v '(Create a snapshot of|Will delete the oldest|Delete subvolume|Making snapshot of )'
+# 2 0 * * 0 root btrfs-snaps weekly 4 | egrep -v '(Create a snapshot of|Will delete the oldest|Delete subvolume|Making snapshot of )'
+
+#Clean up some things
+rm -r /home/david/.cache/chromium/Default
+rm -r /home/david/.cache/mozilla/firefox/j2r45krs.default-default/cache2
+
+: ${BTRFSROOT:=/home/.Snaps}
+DATE="$(date '+%Y%m%d_%H:%M:%S')"
+
+BACKUPROOT="/mnt/Backup"
+
+type=${1:-hourly}
+keep=${2:-12}
+
+
+cd "$BTRFSROOT"
+
+    # Skip duplicate dirs once a year on DST 1h rewind.
+    test -d "$BTRFSROOT/david_${type}_$DATE" && continue
+    echo "Making snapshot of $type $i"
+    mkdir "$BTRFSROOT/david_${type}_$DATE"
+    btrfs subvolume snapshot -r /home/david "$BTRFSROOT/david_${type}_$DATE"
+    count="$(ls -d david_${type}_* | wc -l)"
+    clip=$(( $count - $keep ))
+    if [ $clip -gt 0 ]; then
+        echo "Will delete the oldest $clip snapshots for $type"
+        for sub in $(ls -d david_${type}_* | head -n $clip)
+        do
+            #echo "Will delete $sub"
+            btrfs subvolume delete "$sub/david"
+            rm -rf $sub
+        done
+    fi
+
+    #check for daily backup and do them
+    LASTBACKDaily=$(cat /home/.Snaps/timekeeperDaily)
+    LASTBACKWeekly=$(cat /home/.Snaps/timekeeperWeekly)
+    CHECKDATE="$(date '+%Y%m%d')"
+
+    if [ $LASTBACKDaily -lt $CHECKDATE ];then
+        type="daily"
+        keep=7
+
+        test -d "$BTRFSROOT/david_${type}_$DATE" && continue
+        echo "Making snapshot of $type $i"
+        mkdir "$BTRFSROOT/david_${type}_$DATE"
+        btrfs subvolume snapshot -r /home/david "$BTRFSROOT/david_${type}_$DATE"
+        count="$(ls -d david_${type}_* | wc -l)"
+        clip=$(( $count - $keep ))
+        if [ $clip -gt 0 ]; then
+            echo "Will delete the oldest $clip snapshots for $type"
+            for sub in $(ls -d david_${type}_* | head -n $clip)
+            do
+                #echo "Will delete $sub"
+                btrfs subvolume delete "$sub/david"
+                rm -rf $sub
+            done
+        fi
+        echo $CHECKDATE > /home/.Snaps/timekeeperDaily
+    fi
+
+
+#check for weekly updates
+if [ $LASTBACKWeekly -lt $(($CHECKDATE - 7)) ];then
+    type="weekly"
+    keep=5
+
+    test -d "$BTRFSROOT/david_${type}_$DATE" && continue
+    echo "Making snapshot of $type $i"
+    mkdir "$BTRFSROOT/david_${type}_$DATE"
+    btrfs subvolume snapshot -r /home/david "$BTRFSROOT/david_${type}_$DATE"
+    count="$(ls -d david_${type}_* | wc -l)"
+    clip=$(( $count - $keep ))
+    if [ $clip -gt 0 ]; then
+        echo "Will delete the oldest $clip snapshots for $type"
+        for sub in $(ls -d david_${type}_* | head -n $clip)
+        do
+            #echo "Will delete $sub"
+            btrfs subvolume delete "$sub/david"
+            rm -rf $sub
+        done
+    fi
+    echo $CHECKDATE > /home/.Snaps/timekeeperWeekly
+fi
+
+
+#
+# check if Backup drive is mounted and if it is do the backup on it as well
+mount -U c42c4cb0-948c-4d16-878d-2dc9533e680c /mnt/Backup > /dev/null
+if mountpoint -q /mnt/Backup; then
+    cd $BACKUPROOT
+    rsync -avXq --delete /home/david /mnt/Backup/Backup
+    sync
+    #when booting or a daily one has not been made make snapshot of backup directory
+    if [ "$type" == "reboot" ] || [ "$type" == "daily" ] || ["$type" =="weekly"]; then
+        btrfs subvolume snapshot -r /mnt/Backup/Backup "$BACKUPROOT/BackupSnapshots/david_$DATE"
+    fi
+    umount /mnt/Backup
+fi
+echo "-------------------------------------------------------------"
+echo ""
