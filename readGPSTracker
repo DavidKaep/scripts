@@ -2,10 +2,9 @@
 
 #Importiert Gpx daten von Holux Gps Tracker, korrigiert die daten und schreibt die tracks in Output.gpx
 
-
 echo "Importing Data..."
-gpsbabel -t -i m241 -f /dev/ttyUSB0 -o gpx -F /tmp/GpsDaten.gpx
-#TRACK=$(grep "<name>tra" /tmp/GpsDaten.gpx | grep -P -o "track-[0-9]+" | dmenu -l 20 -p "What track to import?")
+gpsbabel -t -i m241,erase -f /dev/ttyUSB0 -o gpx -F /tmp/GpsDaten.gpx
+cp /tmp/GpsDaten.gpx $1_roh.gpx
 TRACK=$(grep "<name>tra" /tmp/GpsDaten.gpx | grep -P -o "track-[0-9]+")
 head -n 4 /tmp/GpsDaten.gpx > /tmp/GpsTemp
 for i in $TRACK
@@ -14,11 +13,9 @@ do
     sed -r -n "/<name>$i/,/<\/trk>/p" /tmp/GpsDaten.gpx >> /tmp/GpsTemp
     DATUM=$(grep -oP "[0-9]+-[0-9]+-[0-9]+" /tmp/GpsTemp | tail -n 1)
     REPLTIME=$(date +"%Y-%m-%d" -d "$DATUM + 7168 day")
-    #sed -r "s/[0-9]+-[0-9]+-[0-9]+/$REPLTIME/" /tmp/GpsTemp  | sed -e "1,6 s/<name>.*<\/name>/<name>$NAME<\/name>/" - > $NAME.gpx
-    sed -r "s/[0-9]+-[0-9]+-[0-9]+/$REPLTIME/" /tmp/GpsTemp >> Output.gpx
+    sed -r "s/[0-9]+-[0-9]+-[0-9]+/$REPLTIME/" /tmp/GpsTemp >> $1.gpx
     rm /tmp/GpsTemp
 done
-echo "</gpx>" >> Output.gpx
-echo "Imported\n$TRACK\nto Output.gpx"
+echo "</gpx>" >> $1.gpx
+echo "Imported\n$TRACK\nto $1.gpx"
 rm /tmp/GpsDaten.gpx
-
