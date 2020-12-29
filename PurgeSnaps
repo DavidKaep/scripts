@@ -1,0 +1,11 @@
+#!/bin/sh
+
+#LIST= "$(ls -d1 /home/.Snaps/*/)"
+
+for dir in /home/.Snaps/*/
+do
+    echo "$dir"
+    FULLDIR="$dir/david"
+    sudo btrfs subvolume delete "$FULLDIR"
+done
+
