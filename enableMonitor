@@ -6,9 +6,10 @@ MONITORREL="$(xrandr | awk '/\sconnected/{print $1}' | dmenu -i -p "Choose Monit
 
 xrandr --output $MONITORBUF --auto $POSITION $MONITORREL
 sleep 1
-MONITOR=$MONITORBUF polybar $NUMBERCON &
-herbstclient detect_monitors
-herbstclient pad 1 25 2 2 2
-herbstclient pad 2 25 2 2 2
-herbstclient pad 3 25 2 2 2
-
+#MONITOR=$MONITORBUF polybar $NUMBERCON &
+#herbstclient detect_monitors
+#herbstclient pad 1 25 2 2 2
+#herbstclient pad 2 25 2 2 2
+#herbstclient pad 3 25 2 2 2
+setxkbmap de
+xmodmap ~/.Xmodmap
