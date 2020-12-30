@@ -1,0 +1,17 @@
+#!/bin/sh
+
+
+load=$(lf -remote 'load')
+mode=$(echo "$load" | sed -n '1p')
+list=$(echo "$load" | sed '1d')
+if [ $mode = 'copy' ]; then
+    list=$(echo "$list" | tr "\n" " ")
+    cp -r --reflink=auto $(echo $list) .
+    notify-send "📋 copied files"
+elif [ $mode = 'move' ]; then
+        list=$(echo "$list" | tr "\n" " ")
+        mv $(echo $list) -t .
+        notify-send "🚚 moved files"
+fi
+lf -remote 'send load'
+lf -remote 'send clear'

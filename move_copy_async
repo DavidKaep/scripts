@@ -1,0 +1,21 @@
+#!/bin/sh
+
+
+load=$(lf -remote 'load')
+mode=$(echo "$load" | sed -n '1p')
+list=$(echo "$load" | sed '1d')
+if [ $mode = 'copy' ]; then
+    list=$(echo "$list" | tr "\n" " ")
+        rsync -av --ignore-existing --progress $(echo $list) . \
+        | stdbuf -i0 -o0 -e0 tr '\r' '\n' \
+        | while read line; do
+            lf -remote "send $id echo $line"
+        done
+    notify-send "📋 copied files"
+elif [ $mode = 'move' ]; then
+        list=$(echo "$list" | tr "\n" " ")
+        mv $(echo $list) -t .
+        notify-send "🚚 moved files"
+fi
+lf -remote 'send load'
+lf -remote 'send clear'
